@@ -1,0 +1,100 @@
+clc; 
+clear;
+close all;
+%% Question 3 Part 2
+% Initialize variables
+steps = 4000; % Longer j to have it more stable
+R = 100;
+L = 100*10^-3;
+C = 0.1*10^-6;
+
+A = [1, h/C;
+    -h/L, 1-h*R/L];
+B = [0; h/L];
+Vc_initial = 0; % Initial value of 0s
+I_initial = 0;
+% Populate the containers
+Vin = zeros(steps+1, 1);
+x = [Vc_initial , I_initial ; zeros(steps, 2)];
+Vin(1, 1) = sin(2*pi*frequencies(1)*h);
+for freq = 10: 1: 10000 
+    for j = 2:steps
+        time = h*j;
+        Vin(j, 1) = sin(2 * pi * fre * time);
+        x(j, :) = A*(x(j-1, :)')+B*Vin(j-1, :);
+    end
+    vout = x(:, 2) * R;
+    band(freq-10, );
+end
+
+%% Graphing the results
+
+figure;
+hold on;
+plot(t, x(:, 2)*R );
+plot(t, Vin);
+title("frequency 1");
+legend("output", "input");
+
+figure;
+hold on;
+plot(t, xf2(:, 2)*R);
+plot(t, Vin2);
+% plot(t, x(:, 2)*R ./ Vin);
+title("frequency 2");
+legend("output", "input");
+
+figure;
+hold on;
+plot(t, xf3(:, 2)*R);
+plot(t, Vin3);
+% plot(t, x(:, 2)*R ./ Vin);
+title("frequency 1600Hz Lowpass");
+legend("output", "input");
+
+figure;
+hold on;
+plot(t, xf4(:, 2)*R);
+plot(t, Vin4);
+% plot(t, x(:, 2)*R ./ Vin);
+title("Output voltage and input voltage with input voltage having a 100Hz frequency");
+legend("output", "input");
+
+%% Questions
+% The filter is a bandpass filter. Frequencies at a range around 1500 are
+% allowed to pass, while all other frequencies have their amplitudes cut
+% significantly
+
+%% You can fix this later, basically automated with diff num frequencies
+% numFrequency = size(frequencies, 2);
+% 
+% % Make array that is A repeated num frequency js
+% multipleA = repmat({A}, 1, numFrequency);
+% % Make 2*num x 2*num, where diag are A
+% Aadjusted = blkdiag(multipleA{:});
+% 
+% 
+% Badjusted = B;
+% input = [Vc, I];
+% for count = 1:numFrequency-1
+%     Badjusted = [Badjusted; B];
+%     input = [input, [Vc, I]];
+% end
+% 
+% Vins = zeros(steps, numFrequency);
+% % Vins with columns duplicated for later
+% Vins2 = zeros(steps, numFrequency*2);
+% % Constructs the v in for every frequency we are testing
+% for j = 1:steps
+%     t = h*j;
+%     Vins(j, :) = sin(2.*pi.*frequencies.*t);
+%     for count = 1: numFrequency
+%         Vins2(j, count:count+1) = sin(2.*pi.*frequencies(count).*t);
+%     end
+% end
+% 
+% % Make 2*num frequency columns (1 column for v, one for i) and k j rows
+% xResponse = [input; zeros(steps, numFrequency*2)];
+% for k=2: steps
+%     xResponse(k, :) = Aadjusted*(xResponse(k-1, :)')+Badjusted.*Vins2(k-1, :)';
+% end
