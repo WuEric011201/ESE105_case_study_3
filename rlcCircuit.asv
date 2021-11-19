@@ -6,18 +6,21 @@ h = 1/(192*10^3); % h is 1/192k hz
 kmax = 2880; % number of time steps
 
 % components of circuit
-R1 = 100;
+% Green
+R1 = 50;
 L1 = 100*10^-3;
-C1 = 0.0499*10^-6;
+C1 = 0.1*10^-6;
 
 % Components for other 2 circuits
+% Red
 R2 = 200;
-L2 = 0.07*10^-6;
+L2 = 100*10^-3;
 C2 = 0.1*10^-6;
 
-R3 = 50;
+% Purple
+R3 = 30;
 L3 = 100*10^-3;
-C3 = 0.04*10^-6;
+C3 = 0.1*10^-6;
 
 
 Vin = [0; ones(kmax, 1)];
@@ -53,24 +56,116 @@ t = 0:h:kmax*h; % Make time vector
 
 figure;
 hold on;
-plot(t, Vin(:, 1), 'b');
-plot(t, x1(:, 2)*R1, 'y');
-plot(t, x2(:, 2)*R2, 'r');
-plot(t, x3(:, 2)*R3, 'm');
+plot(t, Vin(:, 1), 'b', 'linewidth',2);
+plot(t, x1(:, 2)*R1, 'g', 'linewidth',2);
+plot(t, x2(:, 2)*R2, 'r', 'linewidth',2);
+plot(t, x3(:, 2)*R3, 'm', 'linewidth',2);
 legend("Voltage in", "Ring quick decay", "Tuned Oscillation", "Unstable Oscillation");
-ylabel("Voltage (v)");
-xlabel(T
+ylabel("Voltage (V)");
+xlabel("Time (s)");
+title("Different oscillations");
 
 
 %% Questions
-% Changing C changes the decay of the signal. A larger C, around 0.1*10^-6,
-% causes a decay, while a C around 0.05*10^-6 causes an oscillation with
-% slow decay. Any C lower than .05*10^-6, even an oscillation as small as
-% 0.04*10^-6, causes oscillations with a growth in amplitude.
+% C changes how fast the oscillations dampen, and the decay. An increase in
+% C causes the oscillations to dampen much quicker, and a smaller C causes 
+% oscillations to dampen slower. It also affects the amplitude of the
+% graph.
 
-% R changes how fast the oscillations dampen. An increase in R causes the
-% oscillations to dampen much quicker, and a smaller R causes oscillations
-% to dampen slower.
+% Changing R only changes how fast the oscillation dampens. A larger R
+% makes the oscillations dampen faster, and a smaller R causes them to
+% dampen slower.
 
 % Changing L changes the period of the oscillation. A larger L value makes
 % the period larger.
+
+%% Sounds
+soundsc(x1); % Green
+% Sounds like an even, low note
+pause(1);
+soundsc(x2); % Red
+% Sounds like a quick, low note
+pause(1);
+soundsc(x3); % Purple
+% Sounds like a note that is increasing in volume
+
+%% Responses
+% Setup like instructions
+R = 100;
+L = 100*10^-3;
+C = 0.1*10^-6;
+
+A = [1, h/C;
+    -h/L, 1-h*R/L];
+B = [0; h/L];
+
+frequencies = [10, 100, 1000, 10000];
+
+%Vins = zeros(kmax, numFrequency);
+Vin1 = zeros(kmax, 1);
+xf1 = [Vc, I; zeros(kmax, 2)];
+for time = 1:kmax
+    t = h*time;
+    Vin1(time, :) = sin(2*pi*frequencies(1)*t);
+    
+    if time> 1
+        xf1(time, :) = A*(xf1(time-1, :)')+B*Vin1(time-1, :);
+    end
+end
+
+Vin2 = zeros(kmax, 1);
+xf2 = [Vc, I; zeros(kmax, 2)];
+for time = 1:kmax
+    t = h*time;
+    Vin2(time, :) = sin(2*pi*frequencies(2)*t);
+    
+    if time> 1
+        xf2(time, :) = A*(xf2(time-1, :)')+B*Vin2(time-1, :);
+    end
+end
+
+Vin3 = zeros(kmax, 1);
+xf2 = [Vc, I; zeros(kmax, 2)];
+for time = 1:kmax
+    t = h*time;
+    Vin3(time, :) = sin(2*pi*frequencies(2)*t);
+    
+    if time> 1
+        xf2(time, :) = A*(xf2(time-1, :)')+B*Vin3(time-1, :);
+    end
+end
+
+
+%% You can fix this later, basically automated with diff num frequencies
+% numFrequency = size(frequencies, 2);
+% 
+% % Make array that is A repeated num frequency times
+% multipleA = repmat({A}, 1, numFrequency);
+% % Make 2*num x 2*num, where diag are A
+% Aadjusted = blkdiag(multipleA{:});
+% 
+% 
+% Badjusted = B;
+% input = [Vc, I];
+% for count = 1:numFrequency-1
+%     Badjusted = [Badjusted; B];
+%     input = [input, [Vc, I]];
+% end
+% 
+% Vins = zeros(kmax, numFrequency);
+% % Vins with columns duplicated for later
+% Vins2 = zeros(kmax, numFrequency*2);
+% % Constructs the v in for every frequency we are testing
+% for time = 1:kmax
+%     t = h*time;
+%     Vins(time, :) = sin(2.*pi.*frequencies.*t);
+%     for count = 1: numFrequency
+%         Vins2(time, count:count+1) = sin(2.*pi.*frequencies(count).*t);
+%     end
+% end
+% 
+% % Make 2*num frequency columns (1 column for v, one for i) and k time rows
+% xResponse = [input; zeros(kmax, numFrequency*2)];
+% for k=2: kmax
+%     xResponse(k, :) = Aadjusted*(xResponse(k-1, :)')+Badjusted.*Vins2(k-1, :)';
+% end
