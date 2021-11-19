@@ -42,4 +42,26 @@ figure;
 hold on;
 plot(Vc(1:end, 1), Vc(1:end, 2));
 plot(Vcbad(1:end, 1), Vcbad(1:end, 2));
+% Make graph function of time for theoretical charging
 fplot(@(t) 1-exp(-t/(R*C)), [0 t]);
+title("Voltage across capaciter vs time");
+xlabel("Time");
+ylabel("Voltage");
+legend("h voltage", "inaccurate h voltage", "Theoretical voltage");
+
+%% Questions
+% As h increases, the V(t) curve becomes less and less like how the real
+% capaciter acts. Our inaccurate h is visably above and less curved than
+% our more accurate h value. Compared to the real curve, however, the
+% accurate h produces a curve that is close, but if you zoom in really
+% really close, there is a difference between the descrete charging curve
+% and the real one, a difference of scale close to 0.0002, which is
+% relatively low.
+
+% RC determines how long it takes the capaciter to charge. A larger RC
+% term causes the capaciter to take a longer time to charge, while a
+% smaller RC makes it take less time. This makes sense in terms of our
+% equations too, as h/RC*Vin is added to Vc with every increment, so a
+% smaller RC means a larger fraction of Vin is added to Vc. (1-(RC) is also
+% multiplied by Vc every increment, but Vin is alrger than Vc, so that term
+% has more of an impact on the change in Vc)
