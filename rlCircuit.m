@@ -26,3 +26,9 @@ title("Voltage vs Time");
 ylabel("Voltage");
 xlabel("Time");
 legend("Voltage in", "Voltage inductor");
+
+%% Questions
+% The steady state voltage of a capaciter is the input voltage. However,
+% for an inducter, it is 0. The capaciter also starts off at 0, and curves
+% concave down to the input voltage. The inducter starts off at the input
+% voltage, and curves concave up towards 0.

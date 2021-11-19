@@ -6,21 +6,18 @@ h = 1/(192*10^3); % h is 1/192k hz
 kmax = 2880; % number of time steps
 
 % components of circuit
-% Green
-R1 = 50;
+R1 = 100;
 L1 = 100*10^-3;
-C1 = 0.1*10^-6;
+C1 = 0.0499*10^-6;
 
 % Components for other 2 circuits
-% Red
 R2 = 200;
-L2 = 100*10^-3;
+L2 = 0.07*10^-6;
 C2 = 0.1*10^-6;
 
-% Purple
-R3 = 30;
+R3 = 50;
 L3 = 100*10^-3;
-C3 = 0.1*10^-6;
+C3 = 0.04*10^-6;
 
 
 Vin = [0; ones(kmax, 1)];
@@ -56,25 +53,24 @@ t = 0:h:kmax*h; % Make time vector
 
 figure;
 hold on;
-plot(t, Vin(:, 1), 'b', 'linewidth',2);
-plot(t, x1(:, 2)*R1, 'g', 'linewidth',2);
-plot(t, x2(:, 2)*R2, 'r', 'linewidth',2);
-plot(t, x3(:, 2)*R3, 'm', 'linewidth',2);
+plot(t, Vin(:, 1), 'b');
+plot(t, x1(:, 2)*R1, 'y');
+plot(t, x2(:, 2)*R2, 'r');
+plot(t, x3(:, 2)*R3, 'm');
 legend("Voltage in", "Ring quick decay", "Tuned Oscillation", "Unstable Oscillation");
-ylabel("Voltage (V)");
-xlabel("Time (s)");
-title("Different oscillations");
+ylabel("Voltage (v)");
+xlabel(T
 
 
 %% Questions
-% C changes how fast the oscillations dampen, and the decay. An increase in
-% C causes the oscillations to dampen much quicker, and a smaller C causes 
-% oscillations to dampen slower. It also affects the amplitude of the
-% graph.
+% Changing C changes the decay of the signal. A larger C, around 0.1*10^-6,
+% causes a decay, while a C around 0.05*10^-6 causes an oscillation with
+% slow decay. Any C lower than .05*10^-6, even an oscillation as small as
+% 0.04*10^-6, causes oscillations with a growth in amplitude.
 
-% Changing R only changes how fast the oscillation dampens. A larger R
-% makes the oscillations dampen faster, and a smaller R causes them to
-% dampen slower.
+% R changes how fast the oscillations dampen. An increase in R causes the
+% oscillations to dampen much quicker, and a smaller R causes oscillations
+% to dampen slower.
 
 % Changing L changes the period of the oscillation. A larger L value makes
 % the period larger.
