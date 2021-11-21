@@ -14,7 +14,7 @@ Vpulse(2) = 1;
 
 Vringing = myResonatorCircuit(Vpulse,1/Fs);
 soundsc(Vringing,Fs);
-
+pause(5);
 %% Task 2: Audio sensor
 
 load('MarsHelicopter_noisy.mat');
