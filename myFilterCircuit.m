@@ -16,9 +16,9 @@
 % Vout - time-series vector representing the output voltage of a circuit
 function Vout = myFilterCircuit(Vin,h)
 
-R = 20000; % how steep it is 
-L = 7000*10^-3; % how sharp it is 
-C = 0.007*10^-6;% moving the band peak from left to right 
+R = 9800;
+L = 6000*10^-3;  
+C = 0.007*10^-6;
 
 A = [1, h/C;
     -h/L, 1-h*R/L];
