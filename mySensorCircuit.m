@@ -16,5 +16,22 @@
 % Vout - time-series vector representing the output voltage of a circuit
 
 function Vout = mySensorCircuit(Vin,h)
-Vout = Vin;
+Vout = [0 0; zeros(length(Vin)-1, 2)];
+% R=2;
+% L=1600*10^-3;
+% C=9/4*10^-6;
+
+R=1;
+L=1.6;
+C=1.1218449233*2*10^-6;
+
+A = [1, h/C;
+    -h/L, 1-h*R/L];
+B = [0; h/L];
+for time = 1:length(Vout)
+    if time> 1
+        Vout(time, :) = A*(Vout(time-1, :)')+B*Vin(time-1, :);
+    end
+end
+Vout = Vout * R;
 end
